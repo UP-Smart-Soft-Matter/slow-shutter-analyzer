@@ -20,12 +20,13 @@ def get_data(filepath):
 def linear(x, a, b):
     return a * x + b
 
-x, y = get_data(r'C:\Users\Mika Music\Nextcloud\Data\260903_rene_polymer_groth_rate\2%_rs239.txt')
+x, y = get_data(r'C:\Users\Mika Music\Nextcloud\Data\260903_rene_polymer_groth_rate\versuch2\rs93.txt')
+
 
 x = np.array(x) * u.m
 y = (np.array(list(reversed(y))) * u.m).to(u.nm)
 
-dist_to_time_factor = 40
+dist_to_time_factor = 3.3
 x_time = ((x.to(u.um).value * dist_to_time_factor) * u.s).to(u.min)
 
 fit, _ = curve_fit(linear, x_time.value, y.value)
@@ -33,14 +34,14 @@ fit2, _ = curve_fit(linear, x_time.to(u.s).value, y.value)
 print(f"steigung: {fit2[0]:.3f} nm/s")
 fig, ax = plt.subplots()
 ax.plot(x_time, y, label="data")
-# ax.plot(x_time, linear(x_time.value, fit[0], fit[1]), label="linear fit: a={:.3f}, b={:.3f}".format(fit[0], fit[1]))
-plt.xlabel(f'illumination time ({x_time.unit})')
+ax.plot(x_time, linear(x_time.value, fit[0], fit[1]), label="linear fit: a={:.3f}, b={:.3f}".format(fit[0], fit[1]))
+plt.xlabel(f'Δ illumination time ({x_time.unit})')
 plt.ylabel(f'srg height ({y.unit})')
-# plt.legend()
+plt.legend()
 text_box = AnchoredText(
-    f"polymer: RS-239 (8%)\nlaser Power: 200 mW\nobjective lens: 40x",
-    # f"\ngroth rate: {fit2[0]:.3f} {y.unit}/s",
-    loc="upper left",
+    f"polymer: RS-93 (8%)\nperiod: 4.1 µm (35 px)\nlaser Power: 200 mW\nobjective lens: 40x"
+    f"\ngroth rate: {fit2[0]:.3f} {y.unit}/s",
+    loc="lower right",
     prop=dict(size=12),
     frameon=True
 )
